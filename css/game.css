@@ -1,0 +1,164 @@
+.game-element {
+	width: 200px;
+	height: 200px;
+	position: relative;
+	background-color: #eee;
+}
+
+.game-element .tile-element {
+	position: absolute;
+	width: 25%;
+	height: 25%;
+	display: inline-block;
+	background-color: #FFDB69;
+	border: 1px solid #000;
+	
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+	color: #f9f6f2;
+	text-align: center;
+}
+
+/* positioning of a tile */
+
+.game-element .tile-element[data-x="0"] {
+	left: 0;
+}
+
+.game-element .tile-element[data-x="1"] {
+	left: 25%;
+}
+
+.game-element .tile-element[data-x="2"] {
+	left: 50%;
+}
+
+.game-element .tile-element[data-x="3"] {
+	left: 75%;
+}
+
+.game-element .tile-element[data-y="0"] {
+	top: 0;
+}
+
+.game-element .tile-element[data-y="1"] {
+	top: 25%;
+}
+
+.game-element .tile-element[data-y="2"] {
+	top: 50%;
+}
+
+.game-element .tile-element[data-y="3"] {
+	top: 75%;
+}
+
+/* color scheme */
+
+.game-element .tile-element[data-val="1"] {background: #eee4da;}
+.game-element .tile-element[data-val="2"] {background: #ede0c8;}
+.game-element .tile-element[data-val="3"] {background: #f2b179;}
+.game-element .tile-element[data-val="4"] {background: #f59563;}
+.game-element .tile-element[data-val="5"] {background: #f67c5f;}
+.game-element .tile-element[data-val="6"] {background: #f65e3b;}
+
+
+.game-element .tile-element:after {
+	position: relative;
+	vertical-align: middle;
+	font-size: 30px;
+	color: inherit;
+	font-weight: bold;
+	line-height: 47px; /* bad solution - i`ll make a vertical-align middle adjustiong text content of a tile later using dummy span height=100% trick */
+}
+
+.game-element .tile-element[data-val="1"]:after {content: "2";}
+.game-element .tile-element[data-val="2"]:after {content: "4";}
+.game-element .tile-element[data-val="3"]:after {content: "8";}
+.game-element .tile-element[data-val="4"]:after {content: "16";}
+.game-element .tile-element[data-val="5"]:after {content: "32";}
+.game-element .tile-element[data-val="6"]:after {content: "64";}
+.game-element .tile-element[data-val="7"]:after {content: "128"; color: #776e65;}
+.game-element .tile-element[data-val="8"]:after {content: "256"; color: #776e65;}
+.game-element .tile-element[data-val="9"]:after {content: "512"; color: #776e65;}
+.game-element .tile-element[data-val="10"]:after {content: "1024"; font-size: 16px; color: #776e65;}
+.game-element .tile-element[data-val="11"]:after {content: "2048"; font-size: 16px; color: #776e65;}
+.game-element .tile-element[data-val="12"]:after {content: "4096"; font-size: 16px; color: #776e65;}
+.game-element .tile-element[data-val="13"]:after {content: "8192"; font-size: 16px; color: #776e65;}
+.game-element .tile-element[data-val="14"]:after {content: "16384"; font-size: 16px; color: #776e65;}
+.game-element .tile-element[data-val="15"]:after {content: "32768"; font-size: 16px; color: #776e65;}
+
+
+.game-element .tile-element[data-val="1"]:after,
+.game-element .tile-element[data-val="2"]:after {
+	color: #776e65;
+}
+
+.game-element .tile-element[data-val="3"]:after,
+.game-element .tile-element[data-val="4"]:after,
+.game-element .tile-element[data-val="5"]:after,
+.game-element .tile-element[data-val="6"]:after {
+	color: #fff;
+}
+
+.menu-element button {
+	display: inline-block;
+	padding: 5px;
+	margin-bottom: 10px;
+}
+
+.fade-element.hidden {
+	display: none;
+}
+
+.fade-element {
+	z-index: 9999;
+	position: fixed;
+	top: 50%;
+	padding: 20px;
+	left: 50%;
+	width: 150px;
+	height: 100px;
+	margin-top: -50px;
+	margin-left: -75px;
+	-webkit-box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+	-moz-box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+	box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+	background-color: #fff;
+}
+
+
+.game-element .loose-message-element {
+	position: absolute;
+	z-index: 2;
+	background-color: rgba(0, 0, 0, 0.3);
+	color: #000;
+	font-size: 20px;
+	left: 0;
+	top: 0;
+	width: 100%;
+	height: 100%;
+	
+	line-height: 200px;
+	text-align: center;
+	color: #FDF7CA;
+	font-weight: bold;
+	font-size: 44px;
+	text-shadow: 0 0 10px rgba(0,0,0,0.5);
+}
+
+
+.game-element,
+.scores-list-element {
+	display: inline-block;
+	vertical-align: top;
+}
+
+.scores-list-element {
+	margin-left: 10px;
+}
+
+.scores-list-element ul {
+	padding-left: 20px;
+}
