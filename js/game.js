@@ -113,19 +113,13 @@ var game = function() {
 		}
 	}
 	
-	// i use magic numbers.. because this game has only one fixed number of cells and rows - 4 and i suppose that all indexes(both x and y) are between 0 and 3
 	var n = 4;
 	
-	//mega function.. 
-	// x_dir = 0 y_dir =  1 - move up
-	// x_dir = 0 y_dir = -1 - move down
-	// x_dir =  1 y_dir = 0 - move right
-	// x_dir = -1 y_dir = 0 - move left
-	// and we use easy sample alghoritm in one direction, then we change our coordinates according to a direction of moveent specified with x_dir and y_dir;
+	/*
+		this code adds random tile in free game space
+	*/
 	
-	
-this.add_random = function() {
-		
+	this.add_random = function() {
 		var count = 0;
 		for (var i = 0; i < n; i ++) {
 			for (var j = 0; j < n; j ++) {
@@ -133,20 +127,23 @@ this.add_random = function() {
 			}
 		}
 		
-		if (count)
-		while (true)
-		for (var i = 0; i < n; i ++) {
-			for (var j = 0; j < n; j ++) {
-				if (this.get(i, j) == 0 && Math.random() < 1 / count) {
-					this.set(i, j, Math.random() < 0.9 ? 1 : 2);
-					console.log("rendered");
+		if (count) {
+			var indexAdd = Math.round(Math.random() * count - 1);
+			var index = 0;
+			
+			for (var i = 0; i < n; i ++) {
+				for (var j = 0; j < n; j ++) {
+					if (this.get(i, j) == 0) {
+						if (index === indexAdd) {
+							this.set(i, j, Math.random() < 0.9 ? 1 : 2);
 					
-					return;
-				
-}
+							return;
+						}
+						index ++;
+					}
+				}
 			}
 		}
-	
 	}
 	
 	this.loose_func = null;
@@ -208,6 +205,12 @@ this.add_random = function() {
 		return {x: x_ret, y: y_ret};
 	}
 	
+	//mega function.. 
+	// x_dir = 0 y_dir =  1 - move up
+	// x_dir = 0 y_dir = -1 - move down
+	// x_dir =  1 y_dir = 0 - move right
+	// x_dir = -1 y_dir = 0 - move left
+	// and we use easy sample alghoritm in one direction, then we change our coordinates according to a direction of moveent specified with x_dir and y_dir;
 	
 	this.move = function (i, x_dir, y_dir) {
 		var moved = false;
