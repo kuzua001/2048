@@ -94,6 +94,88 @@ $(function() {
 			}
 		});
 	});
+	
+	$(".menu-element .load").click(function() {
+		gameObject.stop();
+		$(".overlay-element").fadeIn();
+		$(".fade-element.load-game").fadeIn();
+		$(".fade-element.load-game select.game").empty();
+		$(".fade-element.load-game select.saving").empty();
+		$(".fade-element.load-game select.saving").append(
+			$("<option value='0'>choose saving</option>")
+		);
+		
+		$.ajax({
+			"url" : "./ajax/actions.php",
+			"type" : "post",
+			"data" : {"action" : "get_games_list"},
+			"success" : function(data) {
+				var dataArr = JSON.parse(data);
+				if (dataArr) {
+					$(".fade-element.load-game select.game").append(
+						$("<option value='0'>choose game</option>")
+					);
+					for (var i in dataArr["data"]) {
+						$(".fade-element.load-game select.game").append(
+							$("<option value='" + dataArr["data"][i].id + "'>" + dataArr["data"][i].name + "</option>")
+						);
+					}
+				}
+			}
+		});
+	});
+	
+	
+	$(".fade-element.load-game select.game").on("change", function(e) {
+		var $select = $(e.currentTarget);
+		var game_id = $select.val();
+		if (game_id != 0) {
+			$.ajax({
+				"url" : "./ajax/actions.php",
+				"type" : "post",
+				"data" : {"action" : "get_game_savings", "game_id" : game_id},
+				"success" : function(data) {
+					var dataArr = JSON.parse(data);
+					$(".fade-element.load-game select.saving").empty();
+					if (dataArr) {
+						$(".fade-element.load-game select.saving").append(
+							$("<option value='0'>choose saving</option>")
+						);
+						for (var i in dataArr["data"]) {
+							$(".fade-element.load-game select.saving").append(
+								$("<option data-score='" + dataArr["data"][i].score + "' data-data='" + dataArr["data"][i].data + "' value='" + dataArr["data"][i].id + "'>" + dataArr["data"][i].name + "</option>")
+							);
+						}
+					}
+				}	
+			});
+		}
+	});
+	
+	$(".fade-element.load-game button.load").on("click", function() {
+		var game_id = $(".fade-element.load-game select.game").val();
+		var game_name = $(".fade-element.load-game select.game option:selected").text();
+		var $saving = $(".fade-element.load-game select.saving option:selected");
+		var score = $saving.data("score");
+		
+		if (game_id && $saving.data("data")) {
+			gameObject.id = game_id;
+			gameObject.rows = $saving.data("data");
+			gameObject.score = score;
+			
+			//console.log(data);
+			gameObject.resume();
+			gameObject.render(".game-element");
+			$(".score-element .name").html(game_name);
+			$(".score-element .score").html(score);
+			
+			
+			$(".fade-element.load-game").fadeOut();
+			$(".overlay-element").fadeOut();
+		} else {
+			alert("No saving selected");
+		}
+	});	
 		
 	$(".menu-element .new").click();
 	
