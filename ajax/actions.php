@@ -58,7 +58,7 @@ switch ($_POST["action"]) {
 	break;
 	
 	case "get_games_list":
-		$res = $db->query("select t1.id, t1.name from games t1 inner join scores t2 on t1.id = t2.game_id group by t1.id having count(t2.id) > 0");
+		$res = $db->query("select t1.id, t1.name from games t1 inner join scores t2 on t1.id = t2.game_id and t2.loose = 0 group by t1.id having count(t2.id) > 0");
 		$response["data"] = array();
 		
 		while ($arr = $res->fetch_array(MYSQLI_ASSOC)) {
@@ -69,7 +69,7 @@ switch ($_POST["action"]) {
 	
 	case "get_game_savings":
 		$id = $db->real_escape_string(@$_POST["game_id"]);
-		$res = $db->query("select id, name, score, data from scores where game_id = $id");
+		$res = $db->query("select id, name, score, data from scores where game_id = $id and loose = 0");
 		$response["data"] = array();
 		
 		while ($arr = $res->fetch_array(MYSQLI_ASSOC)) {
