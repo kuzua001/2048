@@ -93,8 +93,8 @@ var game = function() {
 			return null;
 	}
 	
-	this.render = function(sel) {
-		if (this.stopGame) return;
+	this.render = function(sel, forceRender) {
+		if ((forceRender === undefined || forceRender === false) && this.stopGame) return;
 		var $gameElement = $(sel);
 		
 		$gameElement.empty();

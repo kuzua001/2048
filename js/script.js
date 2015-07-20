@@ -24,8 +24,11 @@ $(function() {
 	//setting callback when we loose game
 	
 	gameObject.loose_func = function(obj) {
-		obj.render(".game-element"); /*very important point, we don`t incapsulate the selector of game DOM element into the game object
-		to keep some mvc logic, but after the end of the game we have to render game field one more time, so we do it in this callback */
+		console.log("Last rendering");
+		console.log(JSON.stringify(obj.rows));
+		
+		gameObject.render(".game-element", true); /*very important point, we don`t incapsulate the selector of game DOM element into the game object
+		to keep some mvc logic, but after the end of the game we have to FORCE render game field one more time, so we do it in this callback */
 		obj.save_loose();
 		$(".game-element").append($("<div class='loose-message-element'>You loose</div>"));
 	}
