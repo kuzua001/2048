@@ -97,8 +97,6 @@ var game = function() {
 		if (this.stopGame) return;
 		var $gameElement = $(sel);
 		
-		//console.log($gameElement);
-		
 		$gameElement.empty();
 		for (var i in this.rows) {
 			for (var j in this.rows[i]) {
@@ -186,7 +184,6 @@ var game = function() {
 			
 			return;
 		}
-		//console.log("process called");
 		
 		var tilesMoved = false;
 		for (var i = 0; i < n; i ++) {
@@ -275,7 +272,6 @@ var game = function() {
 					found_second = false;
 					this.score += Math.pow(2, val1 + 1);
 					moved |= true;
-					//console.log(i + ' moved in first if');
 				} else {
 					this.setXY(this.getXY(i, pos, x_dir, y_dir), val1);
 					this.setXY(this.getXY(i, pos + 1, x_dir, y_dir), val2);
@@ -295,7 +291,6 @@ var game = function() {
 			
 			if (pos1 != 0 && pos != pos1) {
 				moved |= true;
-				//console.log(i + ' moved in last if');
 			}
 		}
 		

@@ -4,7 +4,6 @@ function update_scores() {
 		"type" : "post",
 		"data" : {action : "load_scores"},
 		"success" : function(data) {
-			//console.log(data);
 			scores = JSON.parse(data);
 			if (scores && scores["scores"]) {
 				scores = scores["scores"];
@@ -25,6 +24,8 @@ $(function() {
 	//setting callback when we loose game
 	
 	gameObject.loose_func = function(obj) {
+		obj.render(".game-element"); /*very important point, we don`t incapsulate the selector of game DOM element into the game object
+		to keep some mvc logic, but after the end of the game we have to render game field one more time, so we do it in this callback */
 		obj.save_loose();
 		$(".game-element").append($("<div class='loose-message-element'>You loose</div>"));
 	}
@@ -162,8 +163,7 @@ $(function() {
 			gameObject.id = game_id;
 			gameObject.rows = $saving.data("data");
 			gameObject.score = score;
-			
-			//console.log(data);
+		
 			gameObject.resume();
 			gameObject.render(".game-element");
 			$(".score-element .name").html(game_name);
