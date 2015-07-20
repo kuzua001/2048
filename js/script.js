@@ -4,7 +4,7 @@ function update_scores() {
 		"type" : "post",
 		"data" : {action : "load_scores"},
 		"success" : function(data) {
-		console.log(data);
+			//console.log(data);
 			scores = JSON.parse(data);
 			if (scores && scores["scores"]) {
 				scores = scores["scores"];

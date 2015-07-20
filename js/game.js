@@ -12,6 +12,8 @@ String.prototype.apply_template = function (data) {
 
 
 var game = function() {
+	this.step = 0;
+	
 	this.rows = [
 		[0, 0, 0, 0],
 		[0, 0, 0, 0],
@@ -95,7 +97,7 @@ var game = function() {
 		if (this.stopGame) return;
 		var $gameElement = $(sel);
 		
-		console.log($gameElement);
+		//console.log($gameElement);
 		
 		$gameElement.empty();
 		for (var i in this.rows) {
@@ -128,7 +130,7 @@ var game = function() {
 		}
 		
 		if (count) {
-			var indexAdd = Math.round(Math.random() * count - 1);
+			var indexAdd = Math.round(Math.random() * (count - 1));
 			var index = 0;
 			
 			for (var i = 0; i < n; i ++) {
@@ -137,7 +139,7 @@ var game = function() {
 						if (index === indexAdd) {
 							this.set(i, j, Math.random() < 0.9 ? 1 : 2);
 					
-							return;
+							return {x : i, y : j};
 						}
 						index ++;
 					}
@@ -149,18 +151,46 @@ var game = function() {
 	this.loose_func = null;
 	
 	
-	this.process = function(x_dir, y_dir) {
+	this.test_all_directions = function(x_dir, y_dir) {
+		//pushing current game field andscore values into tmp variables 
+		var tmpRows = jQuery.extend(true, {}, this.rows);
+		var score = this.score;
 		
+		var directions = [
+			{x : 0, y : 1},
+			{x : 0, y : -1},
+			{x : 1, y : 0},
+			{x : -1, y : 0}
+		];
+		
+		for (var j in directions) {
+			var tilesMoved = false;
+			for (var i = 0; i < n; i ++) {
+				tilesMoved |= this.move (i, directions[j].x, directions[j].y);
+			}
+			
+			if (tilesMoved) {
+				this.rows = tmpRows;
+				this.score = score;
+				return true;
+			}
+		}
+		
+		return false;
+	}
+	
+	this.process = function(x_dir, y_dir) {
+		this.step ++;
 		if (this.stopGame) {
 			console.log("The Game is currently stopped. No actions could be processed.");
 			
 			return;
 		}
-		console.log("process called");
+		//console.log("process called");
 		
 		var tilesMoved = false;
 		for (var i = 0; i < n; i ++) {
-			tilesMoved |= this.move (i, x_dir, y_dir);
+			tilesMoved |= this.move(i, x_dir, y_dir);
 		}
 		
 
@@ -171,13 +201,21 @@ var game = function() {
 			}
 		}
 		
-		if (!count) {
+		
+		if (count !== 0 && tilesMoved) {
+			var tileCoord = this.add_random();
+			console.log("added tile on step #" + this.step + " in " + JSON.stringify(tileCoord));
+			console.log(JSON.stringify(this.rows));
+		}
+		
+		if (!tilesMoved) {
+			console.log("unable to move ('" + x_dir + "','" + y_dir + "') on step #" + this.step);
+		}
+		
+		if (!this.test_all_directions()) {
 			this.stop();
 			return this.loose_func !== null ? this.loose_func(this) : false;
 		}
-		
-		if (count && tilesMoved)
-		this.add_random();
 	}
 	
 	this.getXY = function (x, y, x_dir, y_dir) {
