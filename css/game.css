@@ -118,16 +118,21 @@
 	top: 50%;
 	padding: 20px;
 	left: 50%;
-	width: 150px;
+	width: 200px;
 	height: 100px;
 	margin-top: -50px;
-	margin-left: -75px;
+	margin-left: -100px;
 	-webkit-box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
 	-moz-box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
 	box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
 	background-color: #fff;
 }
 
+
+.fade-element input,
+.fade-element select {
+	width: 150px;
+}
 
 .game-element .loose-message-element {
 	position: absolute;
