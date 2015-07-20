@@ -1,6 +1,8 @@
 <?php
 //header("Access-Control-Allow-Origin: *");
 
+require_once(dirname(__FILE__)."/../php/utils.php");
+
 $db = new mysqli("localhost", "root", "1qazxsw2", "2048");
 $db->query("set names utf8");
 
@@ -41,6 +43,7 @@ switch ($_POST["action"]) {
 	case "load_scores":
 		$res = $db->query("select t1.id, t2.name, t1.score from scores t1 inner join games t2 on t1.game_id = t2.id where t1.loose = 1 order by t1.score desc limit 10");
 		while ($arr = $res->fetch_array(MYSQLI_ASSOC)) {
+			strip_all($arr);
 			$response["scores"][] = $arr;
 		}
 		$response["result"] = "ok";
@@ -50,6 +53,7 @@ switch ($_POST["action"]) {
 		$id = $db->real_escape_string(@$_POST["score_id"]);
 		$res = $db->query("select data from scores where id = $id limit 1");
 		if ($arr = $res->fetch_array(MYSQLI_ASSOC)) {
+			strip_all($arr);
 			$response["data"] = $arr["data"];
 			$response["result"] = "ok";
 		} else {
@@ -62,6 +66,7 @@ switch ($_POST["action"]) {
 		$response["data"] = array();
 		
 		while ($arr = $res->fetch_array(MYSQLI_ASSOC)) {
+			strip_all($arr);
 			$response["data"][] = $arr;
 		}
 		$response["result"] = "ok";
@@ -73,6 +78,7 @@ switch ($_POST["action"]) {
 		$response["data"] = array();
 		
 		while ($arr = $res->fetch_array(MYSQLI_ASSOC)) {
+			strip_all($arr);
 			$response["data"][] = $arr;
 		}
 		$response["result"] = "ok";
