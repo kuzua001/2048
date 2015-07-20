@@ -201,12 +201,12 @@ var game = function() {
 		
 		if (count !== 0 && tilesMoved) {
 			var tileCoord = this.add_random();
-			console.log("added tile on step #" + this.step + " in " + JSON.stringify(tileCoord));
+			console.log("Added tile on step #" + this.step + " in " + JSON.stringify(tileCoord));
 			console.log(JSON.stringify(this.rows));
 		}
 		
 		if (!tilesMoved) {
-			console.log("unable to move ('" + x_dir + "','" + y_dir + "') on step #" + this.step);
+			console.log("Unable to move ('" + x_dir + "','" + y_dir + "') on step #" + this.step);
 		}
 		
 		if (!this.test_all_directions()) {
