@@ -111,7 +111,7 @@ switch ($_POST["action"]) {
 	case "get_game_savings":
 		$user_id = get_check_user_id();
 		$res = $db->query(
-			"select t1.id, t1.name, t1.score, t1.data 
+			"select t2.id, t1.name, t1.score, t1.data 
 			from scores t1
 			inner join games t2
 				on t1.game_id = t2.id and t1.loose = 0

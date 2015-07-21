@@ -1,9 +1,17 @@
 var tileTemplate = "<span class='tile-element' data-x='{x}' data-y='{y}' data-val='{val}'></span>";
 
+function escapeRegExp(string) {
+    return string.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1");
+}
+
+function replaceAll(string, find, replace) {
+  return string.replace(new RegExp(escapeRegExp(find), 'g'), replace);
+}
+
 String.prototype.apply_template = function (data) {
     var result = this;
 	for (var key in data) {
-		result = result.replace("{" + key + "}", data[key]);
+		result = replaceAll(result, "{" + key + "}", data[key]);
 	}
 	
 	return result;

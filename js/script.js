@@ -126,12 +126,14 @@ $(function() {
 		});
 	});
 	
-	var rowTemplate = "<tr data-id='{id}' data-data='{data}'><td>{name}</td><td>{score}</td><td><span class='load'>load</span>/<span class='delete'>delete</span></td></tr>";
+	var rowTemplate = "<tr data-id='{id}' data-score='{score}' data-saving-name='{name}' data-data='{data}'><td>{name}</td><td>{score}</td><td><span class='load'>load</span>/<span class='delete'>delete</span></td></tr>";
 	
 	$(".menu-element .load").click(function() {
 		gameObject.stop();
 		$(".overlay-element").fadeIn();
 		$(".fade-element.load-game").fadeIn();
+		var table = $(".fade-element.load-game table.games").DataTable();
+		table.destroy();
 		$(".fade-element.load-game table.games tbody").empty();
 		
 		$.ajax({
@@ -147,13 +149,12 @@ $(function() {
 								data  : dataArr["data"][i].data,
 								name  : dataArr["data"][i].name,
 								score : dataArr["data"][i].score,
-								id    : dataArr["data"][i].id
+								id    : dataArr["data"][i].id,
 							}))
 						);
 					}
 					
-					var table = $(".fade-element.load-game table.games").DataTable();
-					table.destroy();
+					
 					table = $(".fade-element.load-game table.games").DataTable({
 						"paging":   true,
 						"ordering": false,
@@ -169,20 +170,20 @@ $(function() {
 	
 	
 	
-	$(".fade-element.load-game button.load").on("click", function() {
-		var game_id = $(".fade-element.load-game select.game").val();
-		var game_name = $(".fade-element.load-game select.game option:selected").text();
-		var $saving = $(".fade-element.load-game select.saving option:selected");
-		var score = $saving.data("score");
+	$(".fade-element.load-game").on("click", "span.load", function(e) {
+		var $row = $(e.currentTarget).parent().parent();
+		var game_id = $row.data("id");
+		var saving_name = $row.data("savig-name");
+		var score = $row.data("score");
+		var data = $row.data("data");
 		
-		if (game_id && $saving.data("data")) {
+		if (game_id && data) {
 			gameObject.id = game_id;
-			gameObject.rows = $saving.data("data");
+			gameObject.rows = data;
 			gameObject.score = score;
 		
 			gameObject.resume();
 			gameObject.render(".game-element");
-			$(".score-element .name").html(game_name);
 			$(".score-element .score").html(score);
 			
 			
