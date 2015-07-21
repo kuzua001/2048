@@ -6,12 +6,15 @@
 		<title>2048 Game implementation by Ivan Kuznetsov</title>
 		<link rel="stylesheet" type="text/css" href="./css/style.css">
 		<link rel="stylesheet" type="text/css" href="./css/game.css">
+		<link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.7/css/jquery.dataTables.css">
 		<script src="http://code.jquery.com/jquery-latest.min.js" type="text/javascript"></script>
 		<script src="./js/game.js" type="text/javascript"></script>
 		<script src="./js/script.js" type="text/javascript"></script>
+		<script src="//cdn.datatables.net/1.10.7/js/jquery.dataTables.min.js" type="text/javascript"></script>
 	</head>
 	<body>
 		<div class="wrapper-element">
+			<h1>The 2048 Game</h1>
 			<div class="overlay-element" style="display: none;"></div>
 			<div class="fade-element start-game hidden">
 				<span class="close">✕</span>
@@ -29,18 +32,20 @@
 			
 			<div class="fade-element load-game hidden">
 				<span class="close">✕</span>
-				<p>Select game name:</p>
+				<h2>Select game saving:</h2>
 				<p>
-					<select class="game">
-					</select>
+					<table class="games">
+						<thead>
+							<tr>
+								<th>Name</th>
+								<th>Score</th>
+								<th>Actions</th>
+							</tr>
+						</thead>
+						<tbody>
+						</tbody>
+					</table>
 				</p>
-				<p>Select saving name:</p>
-				<p>
-					<select class="saving">
-					</select>
-				</p>
-				
-				<p><button class="load default">load game</button></p>
 			</div>
 			
 			<div class="menu-element">

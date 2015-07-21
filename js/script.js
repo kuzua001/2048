@@ -53,9 +53,38 @@ $(function() {
 	
 	$(".menu-element .new").click(function() {
 		gameObject.stop();
-		$(".overlay-element").fadeIn();
-		$(".fade-element.start-game").fadeIn();
-		$(".fade-element.start-game input").focus();
+		$.ajax({
+			"url" : "./ajax/actions.php",
+			"type" : "post",
+			"data" : {"action": "logon_status"},
+			"success" : function(data) {
+				var dataArr = JSON.parse(data);
+				if (dataArr) {
+					var logged_in = dataArr["data"];
+					if (logged_in) {
+						$.ajax({
+							"url" : "./ajax/actions.php",
+							"type" : "post",
+							"data" : {"action": "new_game"},
+							"success" : function(data) {
+								var dataArr = JSON.parse(data);
+								gameObject.start(dataArr.id);
+								$(".score-element .score").html(0);
+								$(".score-element .name").html(dataArr.name ? dataArr.name : "Noname");
+								gameObject.render(".game-element");
+								$form.fadeOut();
+								$(".overlay-element").fadeOut();
+								$form.find("input[type='text']").val("");
+							}
+						});
+					} else {
+						$(".overlay-element").fadeIn();
+						$(".fade-element.start-game").fadeIn();
+						$(".fade-element.start-game input").focus();
+					}
+				}
+			}
+		});
 	});
 	
 	$(".menu-element .save").click(function() {
@@ -97,62 +126,48 @@ $(function() {
 		});
 	});
 	
+	var rowTemplate = "<tr data-id='{id}' data-data='{data}'><td>{name}</td><td>{score}</td><td><span class='load'>load</span>/<span class='delete'>delete</span></td></tr>";
+	
 	$(".menu-element .load").click(function() {
 		gameObject.stop();
 		$(".overlay-element").fadeIn();
 		$(".fade-element.load-game").fadeIn();
-		$(".fade-element.load-game select.game").empty();
-		$(".fade-element.load-game select.saving").empty();
-		$(".fade-element.load-game select.saving").append(
-			$("<option value='0'>choose saving</option>")
-		);
+		$(".fade-element.load-game table.games tbody").empty();
 		
 		$.ajax({
 			"url" : "./ajax/actions.php",
 			"type" : "post",
-			"data" : {"action" : "get_games_list"},
+			"data" : {"action" : "get_game_savings"},
 			"success" : function(data) {
 				var dataArr = JSON.parse(data);
 				if (dataArr) {
-					$(".fade-element.load-game select.game").append(
-						$("<option value='0'>choose game</option>")
-					);
 					for (var i in dataArr["data"]) {
-						$(".fade-element.load-game select.game").append(
-							$("<option value='" + dataArr["data"][i].id + "'>" + dataArr["data"][i].name + "</option>")
+						$(".fade-element.load-game table.games tbody").append(
+							$(rowTemplate.apply_template({
+								data  : dataArr["data"][i].data,
+								name  : dataArr["data"][i].name,
+								score : dataArr["data"][i].score,
+								id    : dataArr["data"][i].id
+							}))
 						);
 					}
+					
+					var table = $(".fade-element.load-game table.games").DataTable();
+					table.destroy();
+					table = $(".fade-element.load-game table.games").DataTable({
+						"paging":   true,
+						"ordering": false,
+						"info":     false,
+						"searching" : false,
+						"lengthChange" : false
+					});
 				}
 			}
 		});
 	});
 	
 	
-	$(".fade-element.load-game select.game").on("change", function(e) {
-		var $select = $(e.currentTarget);
-		var game_id = $select.val();
-		if (game_id != 0) {
-			$.ajax({
-				"url" : "./ajax/actions.php",
-				"type" : "post",
-				"data" : {"action" : "get_game_savings", "game_id" : game_id},
-				"success" : function(data) {
-					var dataArr = JSON.parse(data);
-					$(".fade-element.load-game select.saving").empty();
-					if (dataArr) {
-						$(".fade-element.load-game select.saving").append(
-							$("<option value='0'>choose saving</option>")
-						);
-						for (var i in dataArr["data"]) {
-							$(".fade-element.load-game select.saving").append(
-								$("<option data-score='" + dataArr["data"][i].score + "' data-data='" + dataArr["data"][i].data + "' value='" + dataArr["data"][i].id + "'>" + dataArr["data"][i].name + "</option>")
-							);
-						}
-					}
-				}	
-			});
-		}
-	});
+	
 	
 	$(".fade-element.load-game button.load").on("click", function() {
 		var game_id = $(".fade-element.load-game select.game").val();
