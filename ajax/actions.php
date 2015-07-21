@@ -76,7 +76,7 @@ switch ($_POST["action"]) {
 				on t2.user_id = t3.id
 			where t1.loose = 1
 			group by t3.id
-			order by t1.score desc
+			order by score desc
 			limit 10;"
 		);
 		
