@@ -16,6 +16,7 @@ function update_scores() {
 	});
 }
 
+var tableSavings;
 
 $(function() {
 	var gameObject = new game();
@@ -72,17 +73,36 @@ $(function() {
 								$(".score-element .score").html(0);
 								$(".score-element .name").html(dataArr.name ? dataArr.name : "Noname");
 								gameObject.render(".game-element");
-								$form.fadeOut();
-								$(".overlay-element").fadeOut();
-								$form.find("input[type='text']").val("");
 							}
 						});
+						if (!$(".menu-element button.logout").length) {
+							$(".menu-element").append("<button class='logout'>logout</button>");
+						}
 					} else {
+						$(".menu-element button.logout").remove();
 						$(".overlay-element").fadeIn();
 						$(".fade-element.start-game").fadeIn();
 						$(".fade-element.start-game input").focus();
 					}
 				}
+			}
+		});
+	});
+	
+	// logout listener
+	
+	$(".menu-element").on("click", "button.logout", function() {
+		$.ajax({
+			"url" : "./ajax/actions.php",
+			"type" : "post",
+			"data" : {"action": "logout"},
+			"success" : function(data) {
+				var dataArr = JSON.parse(data);
+				if (dataArr && dataArr.result == "ok") {
+					$(".score-element .score").html(0);
+					$(".score-element .name").html("Noname");
+				}
+				$(".menu-element .new").click();
 			}
 		});
 	});
@@ -114,6 +134,11 @@ $(function() {
 			"type" : "post",
 			"data" : {"name" : name, "action": "new_game"},
 			"success" : function(data) {
+				
+				if (!$(".menu-element button.logout").length) {
+					$(".menu-element").append("<button class='logout'>logout</button>");
+				}
+				
 				var dataArr = JSON.parse(data);
 				gameObject.start(dataArr.id);
 				$(".score-element .score").html(0);
@@ -126,14 +151,13 @@ $(function() {
 		});
 	});
 	
-	var rowTemplate = "<tr data-id='{id}' data-score='{score}' data-saving-name='{name}' data-data='{data}'><td>{name}</td><td>{score}</td><td><span class='load'>load</span>/<span class='delete'>delete</span></td></tr>";
+	var rowTemplate = "<tr data-id='{id}' data-saving-id={saving_id} data-score='{score}' data-saving-name='{name}' data-data='{data}'><td>{name}</td><td>{score}</td><td><span class='load'>load</span>/<span class='delete'>delete</span></td></tr>";
 	
 	$(".menu-element .load").click(function() {
 		gameObject.stop();
-		$(".overlay-element").fadeIn();
-		$(".fade-element.load-game").fadeIn();
-		var table = $(".fade-element.load-game table.games").DataTable();
-		table.destroy();
+		
+		tableSavings = $(".fade-element.load-game table.games").DataTable();
+		tableSavings.destroy();
 		$(".fade-element.load-game table.games tbody").empty();
 		
 		$.ajax({
@@ -142,7 +166,7 @@ $(function() {
 			"data" : {"action" : "get_game_savings"},
 			"success" : function(data) {
 				var dataArr = JSON.parse(data);
-				if (dataArr) {
+				if (dataArr && dataArr["data"].length) {
 					for (var i in dataArr["data"]) {
 						$(".fade-element.load-game table.games tbody").append(
 							$(rowTemplate.apply_template({
@@ -150,25 +174,44 @@ $(function() {
 								name  : dataArr["data"][i].name,
 								score : dataArr["data"][i].score,
 								id    : dataArr["data"][i].id,
+								saving_id: dataArr["data"][i].saving_id
 							}))
 						);
 					}
 					
 					
-					table = $(".fade-element.load-game table.games").DataTable({
+					tableSavings = $(".fade-element.load-game table.games").DataTable({
 						"paging":   true,
 						"ordering": false,
 						"info":     false,
 						"searching" : false,
 						"lengthChange" : false
 					});
+					$(".overlay-element").fadeIn();
+					$(".fade-element.load-game").fadeIn();
 				}
 			}
 		});
 	});
 	
 	
+	// game savings table actions:
 	
+	$(".fade-element.load-game").on("click", "span.delete", function(e) {
+		var $row = $(e.currentTarget).parent().parent();
+		var saving_id = $row.data("saving-id");
+		var saving_name = $row.data("saving-name");
+		if (confirm("Delete saving '" + saving_name + "'?")) {
+			$.ajax({
+				"url" : "./ajax/actions.php",
+				"type" : "post",
+				"data" : {"action" : "del_game_data", "score_id" : saving_id},
+				"success" : function(data) {
+					tableSavings.row($row).remove().draw();
+				}
+			});
+		}
+	});
 	
 	$(".fade-element.load-game").on("click", "span.load", function(e) {
 		var $row = $(e.currentTarget).parent().parent();

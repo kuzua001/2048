@@ -87,6 +87,24 @@ switch ($_POST["action"]) {
 		$response["result"] = "ok";
 	break;
 	
+	case "del_game_data":
+		$user_id = get_check_user_id();
+		$id = $db->real_escape_string(@$_POST["score_id"]);
+		$res = $db->query(
+			"select t1.data, t2.user_id 
+			from scores t1 
+			inner join games t2
+				on t1.game_id = t2.id 
+			where t1.id = $id
+			limit 1"
+		);
+		// check if this game refers to current user
+		if ($arr = $res->fetch_array(MYSQLI_ASSOC)) {
+			 if ($arr["user_id"] == $user_id)
+			 	$db->query("delete from scores where id = $id");
+		}
+	break;
+	
 	case "get_game_data":
 		$user_id = get_check_user_id();
 		$id = $db->real_escape_string(@$_POST["score_id"]);
@@ -99,10 +117,12 @@ switch ($_POST["action"]) {
 			limit 1"
 		);
 		// check if this game refers to current user
-		if ($arr = $res->fetch_array(MYSQLI_ASSOC) && $arr["user_id"] == $user_id) {
-			strip_all($arr);
-			$response["data"] = $arr["data"];
-			$response["result"] = "ok";
+		if ($arr = $res->fetch_array(MYSQLI_ASSOC)) {
+			if ($arr["user_id"] == $user_id) {
+				strip_all($arr);
+				$response["data"] = $arr["data"];
+				$response["result"] = "ok";
+			}
 		} else {
 			$response["result"] = "error";
 		}
@@ -111,7 +131,7 @@ switch ($_POST["action"]) {
 	case "get_game_savings":
 		$user_id = get_check_user_id();
 		$res = $db->query(
-			"select t2.id, t1.name, t1.score, t1.data 
+			"select t2.id, t1.id as saving_id, t1.name, t1.score, t1.data 
 			from scores t1
 			inner join games t2
 				on t1.game_id = t2.id and t1.loose = 0
