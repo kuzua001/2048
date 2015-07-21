@@ -175,3 +175,14 @@
 	width: 300px;
 	margin-left: -150px;
 }
+
+.fade-element.load-game table.games td span {
+	border-bottom: 1px solid #000;
+	color: #000;
+	cursor: pointer;
+} 
+
+.fade-element.load-game table.games td span:hover {
+	border-bottom: none;
+	color: #888;
+}
